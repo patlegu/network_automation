@@ -1,1 +1,1 @@
-Dockerfile.Debian-12.11-slim
+Dockerfile.Debian-12.Distroless
