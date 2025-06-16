@@ -1,1 +1,1 @@
-Dockerfile.Debian-12.Distroless
+Dockerfile.Alpine.3.19

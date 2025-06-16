@@ -1,0 +1,96 @@
+# Dockerfile for building Ansible image for Alpine Linux, with as few additional software as possible.
+#
+# Version  0.2-alpine
+#
+
+# pull base image
+FROM alpine:3.19
+
+LABEL maintainer="breizhlandocker <psychomonckey@hotmail.fr>"
+
+# Terraform version
+ARG TERRAFORM_VERSION="1.8.4"
+
+# Consolidate RUN instructions to reduce layers, improve readability, and optimize image size.
+RUN \
+    echo "===> Updating APK cache and installing system packages..." && \
+    apk update && \
+    # Install runtime dependencies
+    # --no-cache option reduces image size by not storing the cache
+    apk add --no-cache \
+        python3 \
+        py3-setuptools \
+        py3-psutil \
+        py3-bottle \
+        py3-requests \
+        zbar \
+        py3-yaml \
+        sudo \
+        sshpass \
+        curl \
+        cdrkit \
+#        unrar \
+        unzip \
+        bash \
+        ca-certificates && \
+    \
+    # Install build dependencies as a virtual package, so they can be easily removed later
+    apk add --no-cache --virtual .build-deps \
+        gcc \
+        musl-dev \
+        py3-pip \
+        python3-dev \
+        libffi-dev \
+        openssl-dev \
+        libxml2-dev \
+        libxslt-dev \
+        zbar-dev && \
+    \
+    mv /usr/lib/python3.11/EXTERNALLY-MANAGED /usr/lib/python3.11/EXTERNALLY-MANAGED.old &&\
+    \
+    echo "===> Installing Python packages with pip..." && \
+    # Note: Some Python packages might need specific build tools or libraries on Alpine.
+    # Ensure all necessary -dev packages are included in .build-deps if pip install fails.
+    pip3 install --no-cache-dir --upgrade \
+        pycryptodome \
+        cffi \
+        pyvmomi \
+        ciscoconfparse \
+        napalm \
+        pypsrp \
+        pyntc && \
+    \
+    echo "===> Installing Ansible..."   && \
+    pip3 install --no-cache-dir ansible && \
+    \
+    echo "===> Installing Terraform v${TERRAFORM_VERSION}..." && \
+    curl -sLo /tmp/terraform.zip "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && \
+    unzip -o /tmp/terraform.zip -d /usr/local/bin/ && \
+    chmod +x /usr/local/bin/terraform && \
+    rm /tmp/terraform.zip && \
+    # Verify installation
+    /usr/local/bin/terraform version && \
+    \
+    echo "===> Removing build dependencies..." && \
+    # Remove build-time dependencies
+    apk del .build-deps && \
+    # Clean up temporary files and caches (though --no-cache helps a lot)
+    rm -rf /var/cache/apk/* /tmp/* /var/tmp/* && \
+    \
+    echo "===> Configuring SSH client..." && \
+    mkdir -p /root/.ssh/ && \
+    echo "KexAlgorithms diffie-hellman-group1-sha1,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha1" > /root/.ssh/config &&\
+    echo "Ciphers 3des-cbc,aes128-cbc,aes128-ctr,aes256-ctr" >> /root/.ssh/config &&\
+    chown -R root:root /root/.ssh/ && \
+    chmod 700 /root/.ssh/ && \
+    chmod 600 /root/.ssh/config
+
+# VOLUME instruction: /usr and /etc are generally not recommended as volumes.
+# /root can be useful for user-specific configurations or mounted playbooks.
+VOLUME [ "/root" ]
+
+# Set a working directory
+WORKDIR /root
+
+# Simplified CMD to start an interactive bash session
+CMD [ "bash", "-i" ]
