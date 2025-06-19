@@ -24,6 +24,7 @@ RUN \
         py3-psutil \
         py3-bottle \
         py3-requests \
+        virtualenv \
         zbar \
         py3-yaml \
         sudo \
@@ -84,11 +85,15 @@ RUN \
     echo "Ciphers 3des-cbc,aes128-cbc,aes128-ctr,aes256-ctr" >> /root/.ssh/config &&\
     chown -R root:root /root/.ssh/ && \
     chmod 700 /root/.ssh/ && \
-    chmod 600 /root/.ssh/config
+    chmod 600 /root/.ssh/config && \
 
 # VOLUME instruction: /usr and /etc are generally not recommended as volumes.
 # /root can be useful for user-specific configurations or mounted playbooks.
 VOLUME [ "/root" ]
+COPY ansible.cfg /root/ansible.cfg
+COPY entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+ENTRYPOINT [ "/usr/local/bin/docker-entrypoint.sh" ]
 
 # Set a working directory
 WORKDIR /root
