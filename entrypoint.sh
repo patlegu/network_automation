@@ -1,3 +1,4 @@
+# CHKSUM: 3e5e4cc0c750e8b55a4df7a22e776f2e36daaeb3ceee41f10ea7c4bab9c35e3c
 #!/bin/bash
 set -e # Quitte immédiatement si une commande échoue.
 
