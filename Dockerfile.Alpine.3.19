@@ -9,7 +9,7 @@ FROM alpine:3.19
 LABEL maintainer="breizhlandocker <psychomonckey@hotmail.fr>"
 
 # Terraform version
-ARG TERRAFORM_VERSION="1.8.4"
+ARG TERRAFORM_VERSION="1.12.2"
 
 # Consolidate RUN instructions to reduce layers, improve readability, and optimize image size.
 RUN \
