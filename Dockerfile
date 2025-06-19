@@ -1,1 +1,1 @@
-Dockerfile.Alpine.3.19
+./Dockerfile.Alpine.3.19

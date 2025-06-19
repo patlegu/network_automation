@@ -1,3 +1,4 @@
+# CHKSUM: 02f17b500bd8181f48386a57c5cd6a39beb7a7e5afe10ec6c44f5efa75db2c00
 # Debian - Network Automation Toolbox
 
 This appliance contains the following network automation tools:

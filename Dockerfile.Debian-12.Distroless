@@ -1,3 +1,4 @@
+# CHKSUM: 2fe32760af24cfde6a24260c9c15b9366a3068840d69093b9ebb27bf57c9c83d
 # Dockerfile for building Ansible image for Debian 12 (bookworm), with as few additional software as possible.
 #
 # @see https://launchpad.net/~ansible/+archive/ubuntu/ansible

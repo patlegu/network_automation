@@ -1,3 +1,4 @@
+# CHKSUM: 2dc3e6411cbcd59bce6e3924d5d7cba477ad91909eb87e5c25b070544ec3e48b
 # Dockerfile for building Ansible image for Debian 9 (stretch), with as few additional software as possible.
 #
 # @see https://launchpad.net/~ansible/+archive/ubuntu/ansible

@@ -1,3 +1,4 @@
+# CHKSUM: d9cd80d123355329e7c259e1ec867bcd78c86ec32804eaaf4a4deafa9a5cfce8
 # Dockerfile for building Ansible image for Alpine Linux, with as few additional software as possible.
 #
 # Version  0.2-alpine

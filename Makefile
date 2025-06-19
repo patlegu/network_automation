@@ -1,3 +1,4 @@
+# CHKSUM: b8ecbad2371be95361f3acce84244d403d8d0c321a7d2b30a1286223c3cd6fff
 # Fonction to import config files stored in the env directory
 # define setup_env
 	# $(eval ENV_FILE := env/$(1).env)
@@ -44,7 +45,7 @@ VERSION=$(shell ./version.sh)
 # This will output the help for each task
 # thanks to https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 .PHONY: help build build-nc run up stop release publish publish-latest publish-version \
-        tag tag-latest tag-version repo-login repo-logout version
+        tag tag-latest tag-version repo-login repo-logout version clean clean-all prune-docker
 
 help: ## This help.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -68,6 +69,31 @@ up: build run ## Build and then run the container.
 
 stop: ## Stop and remove a running container
 	docker stop $(APP_NAME); docker rm $(APP_NAME)
+
+clean: stop ## Stop and remove container and the primary image $(APP_NAME)
+	@echo "Stopping and removing container $(APP_NAME)..."
+	-docker stop $(APP_NAME) 2>/dev/null || true
+	-docker rm $(APP_NAME) 2>/dev/null || true
+	@echo "Removing primary image $(APP_NAME)..."
+	-docker rmi $(APP_NAME) 2>/dev/null || true
+
+clean-all: clean ## Stop container and remove all related images: $(APP_NAME), $(DOCKER_REPO)/$(APP_NAME):latest, and $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
+	@echo "Removing tagged image $(DOCKER_REPO)/$(APP_NAME):latest..."
+	-docker rmi $(DOCKER_REPO)/$(APP_NAME):latest 2>/dev/null || true
+	@echo "Removing tagged image $(DOCKER_REPO)/$(APP_NAME):$(VERSION)..."
+	-docker rmi $(DOCKER_REPO)/$(APP_NAME):$(VERSION) 2>/dev/null || true
+	@echo "All specified images and container for $(APP_NAME) cleaned."
+
+prune-docker: ## Clean up all unused Docker containers, networks, images (dangling and unreferenced), and build cache.
+	@echo "ATTENTION: Cette action va supprimer tous les conteneurs arrêtés, les réseaux non utilisés,"
+	@echo "les images \"dangling\" et non référencées, ainsi que le cache de build Docker."
+	@read -p "Êtes-vous sûr de vouloir continuer? (y/N) " REPLY; \
+	if [ "$$REPLY" = "y" ] || [ "$$REPLY" = "Y" ]; then \
+		echo "Nettoyage des ressources Docker non utilisées..."; \
+		docker system prune -f; \
+	else \
+		echo "Nettoyage annulé."; \
+	fi
 
 release: build-nc publish ## Make a release by building and publishing the `{version}` ans `latest` tagged containers to docker Hub
 

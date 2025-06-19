@@ -1,3 +1,4 @@
+# CHKSUM: 68ff7b4dd3aaa5b2ffd9e41c918d4eb24be0a684341fc422c5f8587a1dc23967
 # INSTALL
 # - copy the files deploy.env, config.env, version.sh and Makefile to your repo
 # - replace the vars in deploy.env

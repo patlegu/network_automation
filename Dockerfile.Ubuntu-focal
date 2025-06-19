@@ -1,3 +1,4 @@
+# CHKSUM: 0248006890a26c8730672faeac1767e85c2ce75de09cfeba41f57f2db85076e6
 # Docker base image for Netmiko, NAPALM, Pyntc, Terraform, and Ansible
 
 FROM ubuntu:focal
