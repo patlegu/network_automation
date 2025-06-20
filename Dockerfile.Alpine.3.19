@@ -24,7 +24,7 @@ RUN \
         py3-psutil \
         py3-bottle \
         py3-requests \
-        virtualenv \
+        py3-virtualenv \
         zbar \
         py3-yaml \
         sudo \
@@ -54,16 +54,19 @@ RUN \
     # Note: Some Python packages might need specific build tools or libraries on Alpine.
     # Ensure all necessary -dev packages are included in .build-deps if pip install fails.
     pip3 install --no-cache-dir --upgrade \
-        pycryptodome \
-        cffi \
-        pyvmomi \
-        ciscoconfparse \
-        napalm \
-        pypsrp \
-        pyntc && \
+        pycryptodome==3.23.0 \
+        cffi==1.17.1 \
+        pyvmomi==9.0.0.0 \
+        ciscoconfparse==1.9.52 \
+        napalm==5.0.0 \
+        pypsrp==0.8.1 \
+        pyntc==2.0.2 \
+        paramiko==3.5.1 \
+        virtualenv==20.24.6 \
+        Jinja2==3.1.6 && \
     \
     echo "===> Installing Ansible..."   && \
-    pip3 install --no-cache-dir ansible && \
+    pip3 install --no-cache-dir ansible==11.7.0 && \
     \
     echo "===> Installing Terraform v${TERRAFORM_VERSION}..." && \
     curl -sLo /tmp/terraform.zip "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && \
@@ -85,15 +88,13 @@ RUN \
     echo "Ciphers 3des-cbc,aes128-cbc,aes128-ctr,aes256-ctr" >> /root/.ssh/config &&\
     chown -R root:root /root/.ssh/ && \
     chmod 700 /root/.ssh/ && \
-    chmod 600 /root/.ssh/config && \
+    chmod 600 /root/.ssh/config
 
 # VOLUME instruction: /usr and /etc are generally not recommended as volumes.
 # /root can be useful for user-specific configurations or mounted playbooks.
 VOLUME [ "/root" ]
+
 COPY ansible.cfg /root/ansible.cfg
-COPY entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-ENTRYPOINT [ "/usr/local/bin/docker-entrypoint.sh" ]
 
 # Set a working directory
 WORKDIR /root

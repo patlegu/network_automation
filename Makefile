@@ -45,7 +45,7 @@ VERSION=$(shell ./version.sh)
 # This will output the help for each task
 # thanks to https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 .PHONY: help build build-nc run up stop release publish publish-latest publish-version \
-        tag tag-latest tag-version repo-login repo-logout version clean clean-all prune-docker
+        tag tag-latest tag-version repo-login repo-logout version clean clean-all prune-docker lint-dockerfile
 
 help: ## This help.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -53,6 +53,10 @@ help: ## This help.
 .DEFAULT_GOAL := help
 
 
+# LINTING TASKS
+lint-dockerfile: ## Lint the Dockerfile using hadolint
+	@echo "Linting Dockerfile..."
+	docker run --rm -i hadolint/hadolint < Dockerfile
 # DOCKER TASKS
 # Build the container
 build: ## Build the container
