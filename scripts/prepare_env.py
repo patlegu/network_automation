@@ -47,7 +47,6 @@ ansible_python_interpreter = /usr/bin/python3
         os.chown(ANSIBLE_CONFIG_DEST, 0, 0)
         os.chmod(ANSIBLE_CONFIG_DEST, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH) # 0644
 
-
 def setup_ssh_config():
     """Configure le fichier ~/.ssh/config."""
     create_directory(SSH_DIR)

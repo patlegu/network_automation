@@ -94,7 +94,7 @@ prune-docker: ## Clean up all unused Docker containers, networks, images (dangli
 	@read -p "Êtes-vous sûr de vouloir continuer? (y/N) " REPLY; \
 	if [ "$$REPLY" = "y" ] || [ "$$REPLY" = "Y" ]; then \
 		echo "Nettoyage des ressources Docker non utilisées..."; \
-		docker system prune -f; \
+		docker system prune -a; \
 	else \
 		echo "Nettoyage annulé."; \
 	fi

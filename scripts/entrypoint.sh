@@ -1,4 +1,3 @@
-# CHKSUM: 3e5e4cc0c750e8b55a4df7a22e776f2e36daaeb3ceee41f10ea7c4bab9c35e3c
 #!/bin/bash
 set -e # Quitte immédiatement si une commande échoue.
 
@@ -16,6 +15,10 @@ fi
 echo "===> Activation de l'environnement virtuel Python..."
 # shellcheck disable=SC1091
 source "$VENV_DIR/bin/activate"
+
+echo "===> Exécution du script de préparation de l'environnement Python..."
+# Exécute le script de préparation de l'environnement
+python3 /usr/local/bin/prepare_env.py
 
 echo "===> Exécution de la commande CMD: $@"
 # Exécute la commande passée en argument (provenant de CMD dans le Dockerfile)

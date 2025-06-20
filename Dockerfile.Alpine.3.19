@@ -80,11 +80,11 @@ RUN \
     # Remove build-time dependencies
     apk del .build-deps && \
     # Clean up temporary files and caches (though --no-cache helps a lot)
-    rm -rf /var/cache/apk/* /tmp/* /var/tmp/* && \
-    \
-    echo "===> Configuring SSH client..." && \
-    # La configuration SSH est maintenant gérée par prepare_env.py
-    echo "SSH client configuration will be handled by entrypoint script."
+    rm -rf /var/cache/apk/* /tmp/* /var/tmp/*
+    # \
+    # echo "===> Configuring SSH client..." && \
+    # # La configuration SSH est maintenant gérée par prepare_env.py
+    # echo "SSH client configuration will be handled by entrypoint script."
 
 # VOLUME instruction: /usr and /etc are generally not recommended as volumes.
 # /root can be useful for user-specific configurations or mounted playbooks.
@@ -99,6 +99,17 @@ CMD [ "bash", "-i" ]
 # Copy scripts
 COPY ./scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY ./scripts/prepare_env.py /usr/local/bin/prepare_env.py
-COPY ./scripts/ansible.cfg /root/ansible.cfg # Copié ici pour que prepare_env.py puisse le trouver
-RUN chmod +x /usr/local/bin/entrypoint.sh && chmod +x /usr/local/bin/prepare_env.py
+# Copié ici pour que prepare_env.py puisse le trouver
+COPY ./scripts/ansible.cfg /root/ansible.cfg 
+# RUN echo "===> Installing dos2unix for line ending conversion..." && \
+#     apk add --no-cache --virtual .fix-line-endings dos2unix && \
+#     echo "===> Converting line endings for entrypoint.sh and prepare_env.py..." && \
+#     dos2unix /usr/local/bin/entrypoint.sh && \
+#     dos2unix /usr/local/bin/prepare_env.py && \
+#     echo "===> Removing dos2unix..." && \
+#     apk del .fix-line-endings && \
+RUN echo "===> Setting execute permissions..." && \
+    # --- Add inspection step here ---
+    chmod +x /usr/local/bin/entrypoint.sh && \
+    chmod +x /usr/local/bin/prepare_env.py
 ENTRYPOINT [ "/usr/local/bin/entrypoint.sh" ]
