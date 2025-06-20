@@ -19,22 +19,22 @@ RUN \
     # Install runtime dependencies
     # --no-cache option reduces image size by not storing the cache
     apk add --no-cache \
-        python3 \
-        py3-setuptools \
-        py3-psutil \
-        py3-bottle \
-        py3-requests \
-        py3-virtualenv \
-        zbar \
-        py3-yaml \
-        sudo \
-        sshpass \
-        curl \
-        cdrkit \
+        python3=3.11.13-r0 \
+        py3-setuptools=70.3.0-r0 \
+        py3-psutil=5.9.6-r0 \
+        py3-bottle=0.12.25-r1 \
+        py3-requests=2.32.4-r0 \
+        py3-virtualenv=20.24.6-r0 \
+        zbar=0.23.93-r0 \
+        py3-yaml=6.0.1-r1 \
+        sudo=1.9.15_p2-r0 \
+        sshpass=1.10-r0 \
+        curl=8.12.1-r0 \
+        cdrkit=1.1.11-r6 \
 #        unrar \
-        unzip \
-        bash \
-        ca-certificates && \
+        unzip=6.0-r14 \
+        bash=5.2.21-r0 \
+        ca-certificates=20241121-r1 && \
     \
     # Install build dependencies as a virtual package, so they can be easily removed later
     apk add --no-cache --virtual .build-deps \
